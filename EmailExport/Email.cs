@@ -22,7 +22,7 @@ namespace EmailExport
 
             AddSender();
 
-            _smtpClient.Port = _settings.PortNumber; ;
+            _smtpClient.Port = _settings.PortNumber;
             _smtpClient.Credentials = new System.Net.NetworkCredential(_settings.UserName, _settings.Password);
             //SmtpServer.EnableSsl = true;  
         }
