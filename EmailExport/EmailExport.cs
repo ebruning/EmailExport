@@ -14,6 +14,7 @@ namespace EmailExport
         Email                       _email              = null;
 
         String                      _batchName          = string.Empty;
+        List<string>                _fileList           = new List<string>();
 
         public void CustomizeSettings(IList<IExporter> exporters, IJob job, IApplication licenseData)
         {
@@ -96,9 +97,8 @@ namespace EmailExport
             if (Directory.Exists(outputFolder))
                 Directory.Delete(outputFolder, true);
 
-            //create file
             _documentConverter.Convert(doc,Path.Combine(outputFolder, outputFileName));
-            //send file
+
             _email.SendEmail(Path.Combine(outputFolder, outputFileName), _batchName);
 
         }

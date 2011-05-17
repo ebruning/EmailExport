@@ -19,12 +19,12 @@ namespace EmailExport
             _smtpClient = new SmtpClient(_settings.SmtpServer);
             
             _mail.From = new MailAddress(_settings.EmailFromAddress);
-            _mail.To.Add(_settings.EmailDestination);
+
+            AddSender();
 
             _smtpClient.Port = _settings.PortNumber; ;
             _smtpClient.Credentials = new System.Net.NetworkCredential(_settings.UserName, _settings.Password);
-            //SmtpServer.EnableSsl = true;
-            
+            //SmtpServer.EnableSsl = true;  
         }
 
         public void SendEmail(string fileName, string subject)
@@ -35,6 +35,14 @@ namespace EmailExport
             _mail.Attachments.Add(CreateAttachment(fileName));
 
             _smtpClient.Send(_mail);
+        }
+
+        private void AddSender()
+        {
+            var emails = Common.ParseEmailAddresses(_settings.EmailDestination);
+
+            foreach (var email in emails)
+                _mail.To.Add(email);
         }
 
         private Attachment CreateAttachment(string fileName)

@@ -48,29 +48,40 @@ namespace EmailExport
         private bool ValidateServerSettings()
         {
             if (!ValidateEmailAddress(txtEmailDestination.Text))
+            {
+                MessageBox.Show("Invalid destination email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
 
             if (!ValidateEmailAddress(txtFromAddress.Text))
+            {
+                MessageBox.Show("Invalid from email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
 
             if (String.IsNullOrEmpty(txtSmtpServer.Text))
+            {
+                MessageBox.Show("Invalid smtp server", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
 
-            int x; //users to validate the port
+            int x; //used to validate the port
             if (!int.TryParse(txtPortNumber.Text, out x))
+            {
+                MessageBox.Show("Invalid port number", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
+            }
 
             return true;
-
         }
 
         private bool ValidateEmailAddress(string emailAddress)
         {
-            return System.Text.RegularExpressions.Regex.IsMatch(
-                                 emailAddress,
-                                 @"^(?("")("".+?""@)|(([0-9a-zA-Z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-zA-Z])@))" +
-                                 @"(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,6}))$"
-                                 );
+            foreach (var email in Common.ParseEmailAddresses(emailAddress))
+                if (!Common.ValidateEmail(email))
+                    return false;
+
+            return true;
         }
 
         private void cboFileType_SelectedIndexChanged(object sender, EventArgs e)
@@ -126,11 +137,7 @@ namespace EmailExport
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (!ValidateServerSettings())
-            {
-                MessageBox.Show("Invalid settings", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+            if (!ValidateServerSettings()) return;
 
             _settings.EmailDestination = txtEmailDestination.Text;
             _settings.EmailFromAddress = txtFromAddress.Text;
