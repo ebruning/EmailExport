@@ -51,7 +51,7 @@ namespace EmailExport
 
         public void EndBatch(IBatch batch, object handle, ReleaseResult result)
         {
-            
+            _email.SendEmail(_fileList, _batchName);
         }
 
         public void EndDocument(IDocument doc, object handle, ReleaseResult result)
@@ -97,10 +97,8 @@ namespace EmailExport
             if (Directory.Exists(outputFolder))
                 Directory.Delete(outputFolder, true);
 
+            _fileList.Add(Path.Combine(outputFolder, outputFileName));
             _documentConverter.Convert(doc,Path.Combine(outputFolder, outputFileName));
-
-            _email.SendEmail(Path.Combine(outputFolder, outputFileName), _batchName);
-
         }
 
         public void SerializeSettings(Stream output)

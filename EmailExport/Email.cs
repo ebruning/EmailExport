@@ -27,12 +27,13 @@ namespace EmailExport
             //SmtpServer.EnableSsl = true;  
         }
 
-        public void SendEmail(string fileName, string subject)
+        public void SendEmail(List<string> files, string subject)
         {
             _mail.Subject = subject;
             _mail.Body = "";
 
-            _mail.Attachments.Add(CreateAttachment(fileName));
+            foreach (var file in files)
+                _mail.Attachments.Add(CreateAttachment(file));
 
             _smtpClient.Send(_mail);
         }
