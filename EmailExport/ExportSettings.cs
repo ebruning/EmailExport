@@ -7,7 +7,9 @@ namespace EmailExport
 {
     public class ExportSettings
     {
-        public string   EmailDestination    { get; set; }
+        public string   EmailToAddress      { get; set; }
+        public string   EmailCcAddress      { get; set; }
+        public string   EmailBccAddress     { get; set; }
         public string   EmailFromAddress    { get; set; }
         public string   SmtpServer          { get; set; }
 

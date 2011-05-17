@@ -37,19 +37,39 @@ namespace EmailExport
 
         private void UpdateUI()
         {
-            txtEmailDestination.Text = _settings.EmailDestination;
-            txtFromAddress.Text = _settings.EmailFromAddress;
-            txtSmtpServer.Text = _settings.SmtpServer;
-            txtPortNumber.Text = _settings.PortNumber.ToString();
-            txtUserName.Text = _settings.UserName;
-            txtPassword.Text = _settings.Password;
+            txtToAddress.Text       = _settings.EmailToAddress;
+            txtCcAddress.Text       = _settings.EmailCcAddress;
+            txtBccAddress.Text      = _settings.EmailBccAddress;
+            txtFromAddress.Text     = _settings.EmailFromAddress;
+            txtSmtpServer.Text      = _settings.SmtpServer;
+            txtPortNumber.Text      = _settings.PortNumber.ToString();
+            txtUserName.Text        = _settings.UserName;
+            txtPassword.Text        = _settings.Password;
         }
 
         private bool ValidateServerSettings()
         {
-            if (!ValidateEmailAddress(txtEmailDestination.Text))
+            if (string.IsNullOrEmpty(txtToAddress.Text) && string.IsNullOrEmpty(txtCcAddress.Text) && string.IsNullOrEmpty(txtBccAddress.Text))
             {
-                MessageBox.Show("Invalid destination email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("One destination email field needs to have a valid address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (!ValidateEmailAddress(txtToAddress.Text))
+            {
+                MessageBox.Show("Invalid TO email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            if (!ValidateEmailAddress(txtCcAddress.Text))
+            {
+                MessageBox.Show("Invalid CC email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            
+            if (!ValidateEmailAddress(txtBccAddress.Text))
+            {
+                MessageBox.Show("Invalid BCC email address", "Invalid Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
 
@@ -139,12 +159,14 @@ namespace EmailExport
         {
             if (!ValidateServerSettings()) return;
 
-            _settings.EmailDestination = txtEmailDestination.Text;
-            _settings.EmailFromAddress = txtFromAddress.Text;
-            _settings.SmtpServer = txtSmtpServer.Text;
-            _settings.PortNumber = Convert.ToInt32(txtPortNumber.Text);
-            _settings.UserName = txtUserName.Text;
-            _settings.Password = txtPassword.Text;
+            _settings.EmailToAddress        = txtToAddress.Text;
+            _settings.EmailCcAddress        = txtCcAddress.Text;
+            _settings.EmailBccAddress       = txtBccAddress.Text;
+            _settings.EmailFromAddress      = txtFromAddress.Text;
+            _settings.SmtpServer            = txtSmtpServer.Text;
+            _settings.PortNumber            = Convert.ToInt32(txtPortNumber.Text);
+            _settings.UserName              = txtUserName.Text;
+            _settings.Password              = txtPassword.Text;
 
             _settings.ReleaseMode = cbMultipage.Checked ? ReleaseMode.MultiPage : ReleaseMode.SinglePage;
             

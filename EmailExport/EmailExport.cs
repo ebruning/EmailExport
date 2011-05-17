@@ -34,7 +34,9 @@ namespace EmailExport
             {
                 try
                 {
-                    _settings.EmailDestination = reader.ReadString();
+                    _settings.EmailToAddress = reader.ReadString();
+                    _settings.EmailCcAddress = reader.ReadString();
+                    _settings.EmailBccAddress = reader.ReadString();
                     _settings.EmailFromAddress = reader.ReadString();
                     _settings.SmtpServer = reader.ReadString();
                     _settings.UserName = reader.ReadString();
@@ -111,7 +113,9 @@ namespace EmailExport
         {
             using (BinaryWriter writer = new BinaryWriter(output))
             {
-                writer.Write(_settings.EmailDestination);
+                writer.Write(_settings.EmailToAddress);
+                writer.Write(_settings.EmailCcAddress);
+                writer.Write(_settings.EmailBccAddress);
                 writer.Write(_settings.EmailFromAddress);
                 writer.Write(_settings.SmtpServer);
                 writer.Write(_settings.UserName);

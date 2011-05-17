@@ -40,10 +40,20 @@ namespace EmailExport
 
         private void AddSender()
         {
-            var emails = Common.ParseEmailAddresses(_settings.EmailDestination);
+            var emails = Common.ParseEmailAddresses(_settings.EmailToAddress);
 
             foreach (var email in emails)
                 _mail.To.Add(email);
+
+            emails = Common.ParseEmailAddresses(_settings.EmailCcAddress);
+
+            foreach (var email in emails)
+                _mail.CC.Add(email);
+
+            emails = Common.ParseEmailAddresses(_settings.EmailBccAddress);
+
+            foreach (var email in emails)
+                _mail.Bcc.Add(email);
         }
 
         private Attachment CreateAttachment(string fileName)
