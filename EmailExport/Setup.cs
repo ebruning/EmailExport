@@ -146,6 +146,8 @@ namespace EmailExport
             _settings.UserName = txtUserName.Text;
             _settings.Password = txtPassword.Text;
 
+            _settings.ReleaseMode = cbMultipage.Checked ? ReleaseMode.MultiPage : ReleaseMode.SinglePage;
+            
             DialogResult = DialogResult.OK;                
         }
     }

@@ -13,7 +13,9 @@ namespace EmailExport
         ExportSettings              _settings           = new ExportSettings();
         Email                       _email              = null;
 
-        String                      _batchName          = string.Empty;
+        string                      _outputFolder       = string.Empty;
+        string                      _outputFileName     = string.Empty;
+        string                      _batchName          = string.Empty;
         List<string>                _fileList           = new List<string>();
 
         public void CustomizeSettings(IList<IExporter> exporters, IJob job, IApplication licenseData)
@@ -86,19 +88,23 @@ namespace EmailExport
 
         public void Release(IPage page)
         {
-           
+            if (Directory.Exists(_outputFolder))
+                Directory.Delete(_outputFolder, true);
+
+            _fileList.Add(Path.Combine(_outputFolder, _outputFileName));
+            _pageConverter.Convert(page, Path.Combine(_outputFolder, _outputFileName));
         }
 
         public void Release(IDocument doc)
         {
-            var outputFolder    = OutFolderName(doc.Number.ToString());
-            var outputFileName  = Path.ChangeExtension(doc.Number.ToString(), _documentConverter.DefaultExtension);
+            _outputFolder    = OutFolderName(doc.Number.ToString());
+            _outputFileName  = Path.ChangeExtension(doc.Number.ToString(), _documentConverter.DefaultExtension);
 
-            if (Directory.Exists(outputFolder))
-                Directory.Delete(outputFolder, true);
+            if (Directory.Exists(_outputFolder))
+                Directory.Delete(_outputFolder, true);
 
-            _fileList.Add(Path.Combine(outputFolder, outputFileName));
-            _documentConverter.Convert(doc,Path.Combine(outputFolder, outputFileName));
+            _fileList.Add(Path.Combine(_outputFolder, _outputFileName));
+            _documentConverter.Convert(doc,Path.Combine(_outputFolder, _outputFileName));
         }
 
         public void SerializeSettings(Stream output)
@@ -133,6 +139,9 @@ namespace EmailExport
 
         public object StartDocument(IDocument doc)
         {
+            _outputFolder = OutFolderName(doc.Number.ToString());
+            _outputFileName = Path.ChangeExtension(doc.Number.ToString(), _pageConverter.DefaultExtension);
+
             return null;
         }
 
@@ -158,7 +167,7 @@ namespace EmailExport
 
         public ReleaseMode WorkingMode
         {
-            get { return ReleaseMode.MultiPage; }
+            get { return _settings.ReleaseMode; }
         }
     }
 }
